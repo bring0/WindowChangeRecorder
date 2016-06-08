@@ -1,7 +1,10 @@
-﻿using System.Windows.Forms;
+﻿using System.Text;
+using System.Windows.Forms;
+using Gma.UserActivityMonitor;
 
 namespace Gma.UserActivityMonitorDemo
 {
+
     public partial class TestFormComponent : Form
     {
         public TestFormComponent()
@@ -52,6 +55,16 @@ namespace Gma.UserActivityMonitorDemo
 
         private void HookManager_MouseDown(object sender, MouseEventArgs e)
         {
+            const int nChars = 256;
+            int handle = 0;
+            StringBuilder Buff = new StringBuilder(nChars);
+
+            handle = WindowStuff.GetForegroundWindow();
+
+            if (WindowStuff.GetWindowText(handle, Buff, nChars) > 0)
+            {
+                label1.Text = Buff.ToString();
+            }
             textBoxLog.AppendText(string.Format("MouseDown - {0}\n", e.Button));
             textBoxLog.ScrollToCaret();
         }

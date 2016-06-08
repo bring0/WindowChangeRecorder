@@ -158,6 +158,7 @@ namespace Gma.UserActivityMonitor
                 //Mouse down
                 if (s_MouseDown != null && mouseDown)
                 {
+
                     s_MouseDown.Invoke(null, e);
                 }
 
