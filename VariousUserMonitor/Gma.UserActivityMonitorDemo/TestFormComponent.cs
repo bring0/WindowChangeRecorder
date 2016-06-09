@@ -12,6 +12,8 @@ namespace Gma.UserActivityMonitorDemo
             InitializeComponent();
         }
 
+        public int counter;
+
         #region Event handlers of particular events. They will be activated when an appropriate checkbox is checked.
 
         private void HookManager_KeyDown(object sender, KeyEventArgs e)
@@ -65,7 +67,9 @@ namespace Gma.UserActivityMonitorDemo
             {
                 label1.Text = Buff.ToString();
             }
-            textBoxLog.AppendText(string.Format("MouseDown - {0}\n", e.Button));
+            counter++;
+            ScreenShotThing.CaptureShot(e.X, e.Y, counter.ToString());
+            textBoxLog.AppendText(string.Format("MouseDown - {0} {1} \n", e.Button, Buff));
             textBoxLog.ScrollToCaret();
         }
 

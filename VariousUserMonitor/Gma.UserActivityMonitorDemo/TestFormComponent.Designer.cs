@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.counter = 0;
+
             this.textBoxLog = new System.Windows.Forms.TextBox();
             this.labelWheel = new System.Windows.Forms.Label();
             this.labelMousePosition = new System.Windows.Forms.Label();
