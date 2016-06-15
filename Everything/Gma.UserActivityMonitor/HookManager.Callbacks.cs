@@ -376,9 +376,13 @@ namespace Gma.UserActivityMonitor
             //forward to other application
             return CallNextHookEx(s_KeyboardHookHandle, nCode, wParam, lParam);
         }
+        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Ansi)]
+        static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)]string lpFileName);
 
         private static void EnsureSubscribedToGlobalKeyboardEvents()
         {
+
+            var mar = LoadLibrary("user32.dll");
             // install Keyboard hook only if it is not installed and must be installed
             if (s_KeyboardHookHandle == 0)
             {
@@ -388,8 +392,9 @@ namespace Gma.UserActivityMonitor
                 s_KeyboardHookHandle = SetWindowsHookEx(
                     WH_KEYBOARD_LL,
                     s_KeyboardDelegate,
-                    Marshal.GetHINSTANCE(
-                        Assembly.GetExecutingAssembly().GetModules()[0]),
+                    //Marshal.GetHINSTANCE(
+                    //    Assembly.GetExecutingAssembly().GetModules()[0]),
+                    mar,
                     0);
                 //If SetWindowsHookEx fails.
                 if (s_KeyboardHookHandle == 0)
