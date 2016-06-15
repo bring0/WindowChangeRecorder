@@ -87,7 +87,7 @@ namespace TrayApplication
             ToolStripMenuItem item;
             ToolStripSeparator sep;
 
-            // Windows Explorer.
+            // todo disable feature
             item = new ToolStripMenuItem();
             item.Text = "Disable";
             item.Click += new EventHandler(Disable_Click);
@@ -122,6 +122,7 @@ namespace TrayApplication
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         void Disable_Click(object sender, EventArgs e)
         {
+            //todo disable
             Process.Start("explorer", null);
         }
 
