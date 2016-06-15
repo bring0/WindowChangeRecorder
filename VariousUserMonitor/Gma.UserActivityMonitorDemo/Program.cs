@@ -7,25 +7,25 @@ using System.Drawing.Imaging;
 
 namespace Gma.UserActivityMonitorDemo
 {
-    class countMe
-    {
-        int _counter;
+    //class countMe
+    //{
+    //    int _counter;
 
-        public countMe()
-        {
-            _counter = 0;
-        }
-        public int TheCount
-        {
-            get
-            {
-                this._counter++;
-                return this._counter;
-            }
+    //    public countMe()
+    //    {
+    //        _counter = 0;
+    //    }
+    //    public int TheCount
+    //    {
+    //        get
+    //        {
+    //            this._counter++;
+    //            return this._counter;
+    //        }
             
-        }
+    //    }
         
-    }
+    //}
 
     
     public static class ScreenShotThing
@@ -34,6 +34,11 @@ namespace Gma.UserActivityMonitorDemo
         {
             DateTime now = DateTime.Now;
             return now.ToString("yyyy-MM-dd-HH-mm-ss.fff");
+        }
+        private static string _unixDate()
+        {
+            Int32 unixTimestamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            return unixTimestamp.ToString();
         }
         public static void CaptureShot(int x, int y, string name)
         {
