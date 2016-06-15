@@ -173,6 +173,7 @@ namespace Gma.UserActivityMonitorDemo
 
         private void HookManager_MouseDown(object sender, MouseEventArgs e)
         {
+
             textBoxLog.AppendText(string.Format("MouseDown - {0}\n", e.Button));
             textBoxLog.ScrollToCaret();
         }

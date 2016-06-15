@@ -1,13 +1,18 @@
-﻿using System.Windows.Forms;
+﻿using System.Text;
+using System.Windows.Forms;
+using Gma.UserActivityMonitor;
 
 namespace Gma.UserActivityMonitorDemo
 {
+
     public partial class TestFormComponent : Form
     {
         public TestFormComponent()
         {
             InitializeComponent();
         }
+
+        public int counter;
 
         #region Event handlers of particular events. They will be activated when an appropriate checkbox is checked.
 
@@ -52,7 +57,19 @@ namespace Gma.UserActivityMonitorDemo
 
         private void HookManager_MouseDown(object sender, MouseEventArgs e)
         {
-            textBoxLog.AppendText(string.Format("MouseDown - {0}\n", e.Button));
+            const int nChars = 256;
+            int handle = 0;
+            StringBuilder Buff = new StringBuilder(nChars);
+
+            handle = WindowStuff.GetForegroundWindow();
+
+            if (WindowStuff.GetWindowText(handle, Buff, nChars) > 0)
+            {
+                label1.Text = Buff.ToString();
+            }
+            counter++;
+            ScreenShotThing.CaptureShot(e.X, e.Y, counter.ToString());
+            textBoxLog.AppendText(string.Format("MouseDown - {0} {1} \n", e.Button, Buff));
             textBoxLog.ScrollToCaret();
         }
 
