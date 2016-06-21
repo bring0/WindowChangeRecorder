@@ -38,6 +38,10 @@ namespace TrayApplication
 
             // Attach a context menu.
             ni.ContextMenuStrip = new ContextMenus().Create();
+
+            //I guess listen
+            Listen listener = new Listen();
+           
         }
 
         /// <summary>

@@ -23,6 +23,9 @@ namespace TrayApplication
 
                 // Make sure the application runs!
                 Application.Run();
+
+                
+
             }
         }
     }
