@@ -52,7 +52,24 @@ namespace ScratchTwo
         }
         static void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            //await Task.Run(DumpAndClear()); // Add date on each timer event
+            Task tsk = new Task(DoDumpAndClear);
+            tsk.Start();
+            tsk.Wait();
+            // HOW DO I STOP THIS THANG --oh, get rid of readkey
+
+        }
+
+        static async void DoDumpAndClear()
+        {
+            Task<IList<KeyEventArgs>> result = DumpAndClear();
+            IList<KeyEventArgs> ee = await result;
+            Console.WriteLine("Writing to \"database\" thread {0}", Thread.CurrentThread.ManagedThreadId);
+            for (int i = 0; i < ee.Count; i++)
+            {
+                KeyEventArgs ke = ee[i];
+                Console.WriteLine(ke.KeyCode.ToString());
+            }
+           
         }
         static async Task<IList<KeyEventArgs>> DumpAndClear()
         {
@@ -65,6 +82,10 @@ namespace ScratchTwo
                 {
                     Console.WriteLine("Recieved {0} items on thread {1}", rRet.Count,
                         Thread.CurrentThread.ManagedThreadId);
+                    if (_keyEvents.Count == 0)
+                    {
+                        return rRet;
+                    }
                 }
                 else
                 {
