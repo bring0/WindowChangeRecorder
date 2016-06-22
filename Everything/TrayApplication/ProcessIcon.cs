@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using TrayApplication.Properties;
@@ -16,6 +17,7 @@ namespace TrayApplication
         /// </summary>
         NotifyIcon ni;
 
+        private Listen _listener;
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessIcon"/> class.
         /// </summary>
@@ -24,7 +26,7 @@ namespace TrayApplication
             // Instantiate the NotifyIcon object.
             ni = new NotifyIcon();
         }
-
+        
         /// <summary>
         /// Displays the icon in the system tray.
         /// </summary>
@@ -40,7 +42,7 @@ namespace TrayApplication
             ni.ContextMenuStrip = new ContextMenus().Create();
 
             //I guess listen
-            Listen listener = new Listen();
+            _listener = new Listen();
            
         }
 
@@ -66,6 +68,13 @@ namespace TrayApplication
                 // Start Windows Explorer.
                 Process.Start("explorer", null);
             }
+            else if (e.Button == MouseButtons.Middle)
+            {
+                List<string> test = _listener.GetData();
+                test.ForEach(i => Debug.WriteLine(String.Format("{0}\n", i)));
+                _listener.Dispose();
+                _listener = new Listen();
+            }
         }
     }
 
@@ -75,6 +84,7 @@ namespace TrayApplication
     /// </summary>
     class ContextMenus
     {
+
         /// <summary>
         /// Is the About box displayed?
         /// </summary>
