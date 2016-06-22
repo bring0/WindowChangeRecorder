@@ -3,88 +3,93 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Collections.Concurrent;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 // Demonstrates a basic producer and consumer pattern that uses dataflow.
 
-class IntervalEvent : IDisposable
+namespace CSScratch
 {
-    public string WindowHandle { get; set; }
-    public List<System.Windows.Forms.KeyEventArgs> KeyData { get; set; }
-    public DateTime StartTime { get; set; }
-    public void Dispose()
+    class Program
     {
-        throw new NotImplementedException();
-    }
-}
-class Program
-{
-    // Demonstrates the production end of the producer and consumer pattern.
-    static void Produce(ITargetBlock<string> target)
-    {
-        // Create a Random object to generate random data.
-        Random rand = new Random();
-        // In a loop, fill a buffer with random data and
-        // post the buffer to the target block.
-        //for (int i = 0; i < 100; i++)
-        //{
-        //    // Create an array to hold random byte data.
-        //    byte[] buffer = new byte[1024];
-        //    // Fill the buffer with random bytes.
-        //    rand.NextBytes(buffer);
-        //    // Post the result to the message block.
-        //    target.Post(buffer);
-        //}
-        bool crazy = true;
-        while (crazy)
+        // Demonstrates the production end of the producer and consumer pattern.
+        static void Produce(ITargetBlock<string> target)
         {
-            string thing = Console.ReadLine();
-            if (thing.ToString() == "hey")
+            //Task<int> primeNumberTask = Task.Run(() =>
+            //   Enumerable.Range(2, 3000000).Count(n =>
+            //   Enumerable.Range(2, (int)Math.Sqrt(n) - 1).All(i => n % i > 0)));
+            //var awaiter = primeNumberTask.GetAwaiter();
+            //awaiter.OnCompleted(() =>
+            //{
+            //    int result = awaiter.GetResult();
+            //    Console.WriteLine(result); // Writes result
+            //});
+
+
+            // Create a Random object to generate random data.
+            Random rand = new Random();
+            // In a loop, fill a buffer with random data and
+            // post the buffer to the target block.
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    // Create an array to hold random byte data.
+            //    byte[] buffer = new byte[1024];
+            //    // Fill the buffer with random bytes.
+            //    rand.NextBytes(buffer);
+            //    // Post the result to the message block.
+            //    target.Post(buffer);
+            //}
+            bool crazy = true;
+            while (crazy)
             {
-                crazy = false;
+                string thing = Console.ReadLine();
+                if (thing.ToString() == "hey")
+                {
+                    crazy = false;
+                }
+                target.Post(thing.ToString());
+                continue;
             }
-            target.Post(thing.ToString());
-            continue;
+            // Set the target to the completed state to signal to the consumer
+            // that no more data will be available.
+            target.Complete();
         }
-        // Set the target to the completed state to signal to the consumer
-        // that no more data will be available.
-        target.Complete();
-    }
-    // Demonstrates the consumption end of the producer and consumer pattern.
-    static async Task<int> ConsumeAsync(ISourceBlock<string> source)
-    {
-        // Initialize a counter to track the number of bytes that are processed.
-        int bytesProcessed = 0;
-        // Read from the source buffer until the source buffer has no 
-        // available output data.
-        while (await source.OutputAvailableAsync())
+
+        // Demonstrates the consumption end of the producer and consumer pattern.
+        static async Task<int> ConsumeAsync(ISourceBlock<string> source)
         {
-            //byte[] data = source.Receive();
-            //// Increment the count of bytes received.
-            //bytesProcessed += data.Length;
-            //Console.WriteLine(data[3].ToString());
-            Console.WriteLine(source.Receive());
-            bytesProcessed++;
+            // Initialize a counter to track the number of bytes that are processed.
+            int bytesProcessed = 0;
+            // Read from the source buffer until the source buffer has no 
+            // available output data.
+            while (await source.OutputAvailableAsync())
+            {
+                //byte[] data = source.Receive();
+                //// Increment the count of bytes received.
+                //bytesProcessed += data.Length;
+                //Console.WriteLine(data[3].ToString());
+                Console.WriteLine(source.Receive());
+                bytesProcessed++;
+            }
+            return bytesProcessed;
         }
-        return bytesProcessed;
+
+        static void Main(string[] args)
+        {
+            // Create a BufferBlock<byte[]> object. This object serves as the 
+            // target block for the producer and the source block for the consumer.
+            var buffer = new BufferBlock<string>();
+            // Start the consumer. The Consume method runs asynchronously. 
+            var consumer = ConsumeAsync(buffer);
+            // Post source data to the dataflow block.
+            Produce(buffer);
+            // Wait for the consumer to process all data.
+            consumer.Wait();
+            // Print the count of bytes processed to the console.
+            Console.WriteLine("Processed {0} bytes.", consumer.Result);
+            Console.ReadKey();
+        }
     }
-    static void Main(string[] args)
-    {
-        // Create a BufferBlock<byte[]> object. This object serves as the 
-        // target block for the producer and the source block for the consumer.
-        var buffer = new BufferBlock<string>();
-        // Start the consumer. The Consume method runs asynchronously. 
-        var consumer = ConsumeAsync(buffer);
-        // Post source data to the dataflow block.
-        Produce(buffer);
-        // Wait for the consumer to process all data.
-        consumer.Wait();
-        // Print the count of bytes processed to the console.
-        Console.WriteLine("Processed {0} bytes.", consumer.Result);
-        Console.ReadKey();
-    }
-}
 
 
 //#define TRACE
@@ -168,3 +173,4 @@ class Program
 //        }
 //    }
 //}
+}

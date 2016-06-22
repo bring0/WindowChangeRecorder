@@ -19,7 +19,7 @@ namespace ScratchTwo
     {
         static Timer _timer;
         private static BufferBlock<System.Windows.Forms.KeyEventArgs> _keyEvents;
-
+        //private static ConcurrentDictionary<int, string> rRet = new ConcurrentDictionary<int, string>();
         static void Main(string[] args)
         {
             init();
@@ -39,25 +39,41 @@ namespace ScratchTwo
             Thread userActivityThread = new Thread(Run_UserActivityThread);
             userActivityThread.Name = "UserActivityThread";
             userActivityThread.IsBackground = true;
-                //Required to ensure thread is automatically stopped when application's main thread closes
+            //Required to ensure thread is automatically stopped when application's main thread closes
             userActivityThread.Start();
-            _timer = new Timer(5); // Set up the timer for 3 seconds
+            _timer = new Timer(5000); // Set up the timer for 3 seconds
             //
             // Type "_timer.Elapsed += " and press tab twice.
             //
             _timer.Elapsed += new ElapsedEventHandler(_timer_Elapsed);
             _timer.Enabled = true; // Enable it
-        
-        
+
+
         }
-    static void _timer_Elapsed(object sender, ElapsedEventArgs e)
-    {
-        DumpStuff(); // Add date on each timer event
-    }
-        private static async void DumpStuff()
+        static void _timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            KeyEventArgs key = await _keyEvents.ReceiveAsync();
-            Console.WriteLine(key.KeyCode.ToString());
+            //await Task.Run(DumpAndClear()); // Add date on each timer event
+        }
+        static async Task<IList<KeyEventArgs>> DumpAndClear()
+        {
+            IList<KeyEventArgs> rRet = new List<KeyEventArgs>();
+           
+            while (await _keyEvents.OutputAvailableAsync())
+            {
+
+                if (_keyEvents.TryReceiveAll(out rRet))
+                {
+                    Console.WriteLine("Recieved {0} items on thread {1}", rRet.Count,
+                        Thread.CurrentThread.ManagedThreadId);
+                }
+                else
+                {
+                    Console.WriteLine("Aint recieve none on thread {0}", Thread.CurrentThread.ManagedThreadId);
+                }
+            }
+            //KeyEventArgs key = await _keyEvents.ReceiveAsync();
+            //Console.WriteLine(key.KeyCode.ToString());
+            return rRet;
         }
         private static void Run_UserActivityThread()
         {
