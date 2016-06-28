@@ -35,15 +35,15 @@ namespace TrayApplication
         {
             _data = new List<string>();
 
-            HookManager.KeyDown += HookManager_KeyDown;
-            HookManager.KeyUp += HookManager_KeyUp;
+            //HookManager.KeyDown += HookManager_KeyDown;
+            //HookManager.KeyUp += HookManager_KeyUp;
             HookManager.KeyPress += HookManager_KeyPress;
         }
 
         public List<string> GetData()
         {
-            List<string> rRet = _data;
-            return rRet;
+            //List<string> rRet = _data;
+            return _data;
         } 
         public void Dispose()
         {

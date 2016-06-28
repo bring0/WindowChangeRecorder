@@ -51,8 +51,13 @@ namespace TrayApplication
         /// </summary>
         public void Dispose()
         {
+            if (_listener != null)
+            {
+                _listener.Dispose();
+            }
             // When the application closes, this will remove the icon from the system tray immediately.
             ni.Dispose();
+            
         }
 
         /// <summary>
@@ -71,7 +76,7 @@ namespace TrayApplication
             else if (e.Button == MouseButtons.Middle)
             {
                 List<string> test = _listener.GetData();
-                test.ForEach(i => Debug.WriteLine(String.Format("{0}\n", i)));
+                test.ForEach(i => Debug.WriteLine(String.Format("{0}", i)));
                 _listener.Dispose();
                 _listener = new Listen();
             }
@@ -147,12 +152,16 @@ namespace TrayApplication
         /// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
         void About_Click(object sender, EventArgs e)
         {
-            if (!isAboutLoaded)
+            using (AboutBox ee = new AboutBox())
             {
-                isAboutLoaded = true;
-                new AboutBox().ShowDialog();
-                isAboutLoaded = false;
+                if (!isAboutLoaded)
+                {
+                    isAboutLoaded = true;
+                    ee.ShowDialog();
+                    isAboutLoaded = false;
+                }
             }
+            
         }
 
         /// <summary>
